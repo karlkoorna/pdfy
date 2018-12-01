@@ -1,0 +1,14 @@
+{
+  "name": "pdfy",
+  "description": "An HTML to PDF microservice",
+  "author": "Karl Köörna",
+  "license": "MIT",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "puppeteer": "^1.11.0"
+  },
+  "scripts": {
+    "start": "node app.js"
+  }
+}
