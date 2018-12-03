@@ -1,6 +1,6 @@
 {
   "name": "pdfy",
-  "description": "An HTML to PDF microservice",
+  "description": "An HTML to PDF microservice written in Node.js.",
   "author": "Karl Köörna",
   "license": "MIT",
   "version": "1.0.0",
