@@ -1,6 +1,6 @@
 # PDFy
 
-An HTML to PDF microservice written in [Node.js](https://nodejs.org/en/). Exposes [Chromium](https://www.chromium.org/Home)'s built-in Print to PDF feature.
+HTML to PDF microservice written in [Node.js](https://nodejs.org/en/). Exposes [Chromium](https://www.chromium.org/Home)'s built-in Print to PDF feature.
 
 ## Usage
 
