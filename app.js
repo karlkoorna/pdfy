@@ -67,7 +67,6 @@ http.createServer((req, res) => {
 			res.end(`(500) Internal Server Error - ${ex.message}`);
 		}
 	});
-	
 }).listen(...LISTEN.split(':').reverse(), () => {
 	console.log(`Listening on ${LISTEN}`);
 });
