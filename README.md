@@ -1,6 +1,6 @@
 # PDFy
 
-HTML to PDF microservice using [Chromium](https://www.chromium.org/Home)'s Print to PDF feature.
+HTML to PDF microservice using Chromium's Print to PDF feature.
 
 ## Usage
 
