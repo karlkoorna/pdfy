@@ -8,7 +8,7 @@ By default the microservice will listen on `127.0.0.1:7111`, which can be change
 
 Only `POST` method requests with content type `multipart/form-data` are allowed.
 
-## Form values
+## Form data
 
 ### `header`
 
