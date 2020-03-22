@@ -2,7 +2,7 @@
 	"name": "pdfy",
 	"description": "HTML to PDF microservice using Chromium's Print to PDF feature.",
 	"author": "Karl Köörna",
-	"license": "MIT",
+	"license": "AGPL-3.0",
 	"version": "1.0.0",
 	"main": "index.js",
 	"dependencies": {
