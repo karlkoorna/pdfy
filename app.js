@@ -1,72 +1,80 @@
 const http = require('http');
-const querystring = require('querystring');
 const puppeteer = require('puppeteer');
+const validate = require('./validate.js');
 
-const LISTEN = process.env['LISTEN'] || '127.0.0.1:7111';
-
-// Launch browser process.
 let browser;
 puppeteer.launch().then((_browser) => {
 	browser = _browser;
 });
 
-// Create HTTP server and start listening.
-http.createServer((req, res) => {
-	res.setHeader('content-type', 'text/plain; charset=utf-8');
-	
-	// Validate request method.
-	if (req.method !== 'POST') {
-		res.statusCode = 405;
-		res.end('(405) Method Not Allowed - Only POST method allowed.');
-		return;
+http.createServer({
+	ServerResponse: class extends http.ServerResponse {
+		json(code, type, data) {
+			this.statusCode = code;
+			this.setHeader('content-type', 'application/json; charset=utf-8');
+			this.end(JSON.stringify({ type, data }, null, '\t'));
+		}
 	}
+}, (req, res) => {
+	if (req.method !== 'POST') return void res.json(405, 'method');
+	if (req.headers['content-type'].split(';')[0] !== 'application/json') return void res.json(405, 'type');
 	
-	// Validate request content type.
-	if (req.headers['content-type'] !== 'multipart/form-data') {
-		res.statusCode = 400;
-		res.end('(400) Bad Request - Only Multipart Form Data allowed.');
-		return;
-	}
-	
-	// Assemble request body and respond with generated PDF file.
-	let data = '';
+	let body = '';
 	req.on('data', (chunk) => {
-		data += chunk;
+		body += chunk;
 	}).on('end', async () => {
+		let data;
 		try {
-			const form = querystring.parse(data);
-			const ctx = await browser.createIncognitoBrowserContext();
-			const page = await ctx.newPage();
-			
+			data = JSON.parse(body);
+		} catch (ex) {
+			return void res.json(400, 'json');
+		}
+		
+		if (!validate(data)) return void res.json(400, 'schema', validate.errors.map((err) => err.dataPath.slice(1) || err.params.missingProperty));
+		
+		try {
+			const page = await (await browser.createIncognitoBrowserContext()).newPage();
 			await page.setJavaScriptEnabled(true);
-			await page.setContent(form.body);
 			
-			// Transform header and footer options.
-			form.headerTemplate = form.header;
-			form.footerTemplate = form.footer;
+			try {
+				if (data.body.startsWith('http')) await page.goto(data.body, {
+					timeout: data.timeout || 10000,
+					waitUntil: {
+						'load': 'domcontentloaded',
+						'net0': 'networkidle0',
+						'net2': 'networkidle2',
+					}[data.wait || 'load']
+				}); else await page.setContent(data.body);
+			} catch (ex) {
+				return void res.json(504);
+			}
 			
-			// Override default paper format.
-			if (!form.format && !form.width && !form.height) form.format = 'A4';
-			
-			// Transform margin options.
-			const margin = {};
-			if (form.marginLeft) margin.left = form.marginLeft;
-			if (form.marginRight) margin.right = form.marginRight;
-			if (form.marginTop) margin.top = form.marginTop;
-			if (form.marginBottom) margin.bottom = form.marginBottom;
-			form.margin = margin;
-			
-			// Prevent saving file on server.
-			delete form.path;
+			await page.emulateMedia(data.media || 'print');
+			const pdf = await page.pdf({
+				headerTemplate: data.header ? '<style>#header { display: flex; padding: 0; font-size: 12px; justify-content: center; align-items: center; }</style>' + data.header : '<span></span>',
+				footerTemplate: data.footer ? '<style>#footer { display: flex; padding: 0; font-size: 12px; justify-content: center; align-items: center; }</style>' + data.footer : '<span></span>',
+				format: data.format == null && data.width == null && data.height == null ? 'A4' : data.format,
+				landscape: data.landscape || false,
+				width: data.width || 0,
+				height: data.height || 0,
+				margin: {
+					left: data.left || 0,
+					right: data.right || 0,
+					top: data.top || 0,
+					bottom: data.bottom || 0
+				},
+				scale: data.scale || 1,
+				printBackground: data.background || false,
+				pageRanges: data.pages || '',
+				preferCSSPageSize: data.cssPage || false,
+				displayHeaderFooter: Boolean(data.header) || Boolean(data.footer)
+			});
 			
 			res.setHeader('content-type', 'application/pdf');
 			res.setHeader('content-disposition', 'attachment');
-			res.end(await page.pdf(form));
+			res.end(pdf);
 		} catch (ex) {
-			res.statusCode = 500;
-			res.end(`(500) Internal Server Error - ${ex.message}`);
+			return void res.json(500, 'pdf', ex.message);
 		}
 	});
-}).listen(...LISTEN.split(':').reverse(), () => {
-	console.log(`Listening on ${LISTEN}`);
-});
+}).listen(...(process.env['LISTEN'] || '127.0.0.1:7111').split(':').reverse());

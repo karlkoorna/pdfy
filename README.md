@@ -4,32 +4,35 @@ HTML to PDF microservice using Chromium's Print to PDF feature.
 
 ## Usage
 
-By default the microservice will listen on `127.0.0.1:7111`, which can be changed by the `LISTEN` environment variable.
+Start the service by running `npm start`. The network interface and port can be changed by the `LISTEN` environment variable, which defaults to `127.0.0.1:7111`.
 
-Only `POST` method requests with content type `multipart/form-data` are allowed.
+Only `POST` method requests with content type `application/json` are allowed.
 
-## Form data
+## Options
 
-### `header`
+### `header` =  `''`
 
-HTML template for the header. The following classes will be injected:
-* `date` formatted date
-* `title` document title
-* `url` document location
-* `pageNumber` current page number
-* `totalPages` total pages in the document
+HTML template for the header.
 
-### `footer`
+#### Injected classes:
 
-HTML template for the footer. Should use the same format as the [`header`](#header).
+* `date` – formatted date
+* `title` – document title
+* `url` – document location
+* `pageNumber` – current page number
+* `totalPages` – total pages in the document
+
+### `footer` =  `''`
+
+HTML template for the footer. Uses the same format as [`header`](#header).
 
 ### `body`
 
-HTML for the main body.
+URL or HTML for the page.
 
-### `format`
+### `format` =  `'A4'`
 
-Paper format. Takes priority over [`width`](#width%20height) and [`height`](#width%20height) options, defaults to `A4`.
+Paper format. Takes priority over [`width`](#width%20height) and [`height`](#width%20height) options.
 
 #### Available formats:
 
@@ -45,48 +48,67 @@ Paper format. Takes priority over [`width`](#width%20height) and [`height`](#wid
 * `A5` – 148mm x 210mm
 * `A6` – 105mm x 148mm
 
-### `landscape`
+### `landscape` = `false`
 
-Page orientation, defaults to `false`.
+Page orientation.
 
-### `width` `height`
+### `width` `height` = `0`
 
 Page size.
 
 #### Available units:
 
 * `px` – pixel
-* `in` – inch
-* `cm` – centimeter
 * `mm` – millimeter
+* `cm` – centimeter
+* `in` – inch
 
-### `marginLeft` `marginRight` `marginTop` `marginBottom`
+### `left` `right` `top` `bottom` = `0`
 
-Content margin.
+Body margin.
 
 #### Available units:
 
 * `px` – pixel
-* `in` – inch
-* `cm` – centimeter
 * `mm` – millimeter
+* `cm` – centimeter
+* `in` – inch
 
-### `scale`
+### `scale` = `1`
 
-Scale of page rendering between `0.1` and `2`, defaults to `1`.
+Page scale between `.1` and `2`.
 
-### `displayHeaderFooter`
+### `background` = `false`
 
-Display header and footer, defaults to `false`.
+Include background graphics.
 
-### `printBackground`
+### `pages` = `''`
 
-Print background graphics, defaults to `false`.
+Pages to print, e.g. `1-5, 8, 11-13`.
 
-### `pageRanges`
+### `cssPage` = `false`
 
-Pages to print, e.g. `1-5, 8, 11-13`, defaults to ` `.
+Use size declared in `@page` block.
 
-### `preferCSSPageSize`
+### `media` = `'print'`
 
-Prioritize size declared in CSS' `@page` block, defaults to `false`.
+CSS media type of the page.
+
+#### Available values:
+
+* `screen`
+* `print`
+
+### `timeout` = `10000`
+
+Page load timeout in ms.
+
+### `wait` = `'load'`
+
+Condition by which to check if the page has loaded.
+
+#### Available values:
+
+* `load` – Wait until the DOMContentLoaded event is fired.
+* `net0` – Wait until there are 0 network requests for 500ms.
+* `net2` – Wait until there are 0 network requests for 500ms.

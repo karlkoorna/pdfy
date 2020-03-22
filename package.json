@@ -1,14 +1,15 @@
 {
-  "name": "pdfy",
-  "description": "An HTML to PDF microservice written in Node.js.",
-  "author": "Karl Köörna",
-  "license": "MIT",
-  "version": "1.0.0",
-  "main": "index.js",
-  "dependencies": {
-    "puppeteer": "^1.11.0"
-  },
-  "scripts": {
-    "start": "node app.js"
-  }
+	"name": "pdfy",
+	"description": "HTML to PDF microservice using Chromium's Print to PDF feature.",
+	"author": "Karl Köörna",
+	"license": "MIT",
+	"version": "1.0.0",
+	"main": "index.js",
+	"dependencies": {
+		"ajv": "^6.12.0",
+		"puppeteer": "^2.1.1"
+	},
+	"scripts": {
+		"start": "node app.js"
+	}
 }
