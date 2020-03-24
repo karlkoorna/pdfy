@@ -4,14 +4,14 @@ HTML to PDF microservice using Chromium's Print to PDF feature.
 
 ## Usage
 
-The network interface and port can be changed by the `LISTEN` environment variable, which defaults to `127.0.0.1:7111`.
-
-Only `POST` method requests with content type `application/json` are allowed.
-
 Start for any environment.
 ```
 npm start
 ```
+
+The network interface and port can be changed by the `LISTEN` environment variable, which defaults to `127.0.0.1:7111`.
+
+Only `POST` method requests with content type `application/json` are allowed.
 
 ## Options
 
