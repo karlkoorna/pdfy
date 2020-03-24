@@ -5,13 +5,13 @@ HTML to PDF microservice using Chromium's Print to PDF feature.
 ## Usage
 
 Install dependencies.
-```
-npm install
+```sh
+$ npm install
 ```
 
 Start for any environment.
-```
-npm start
+```sh
+$ npm start
 ```
 
 The network interface and port can be changed by the `LISTEN` environment variable, which defaults to `127.0.0.1:7111`.
