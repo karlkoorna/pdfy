@@ -4,6 +4,11 @@ HTML to PDF microservice using Chromium's Print to PDF feature.
 
 ## Usage
 
+Install dependencies.
+```
+npm install
+```
+
 Start for any environment.
 ```
 npm start
