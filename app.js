@@ -26,7 +26,7 @@ http.createServer({
 		let data;
 		try {
 			data = JSON.parse(body);
-		} catch (ex) {
+		} catch {
 			return void res.json(400, 'json');
 		}
 		
@@ -45,11 +45,11 @@ http.createServer({
 						'net2': 'networkidle2',
 					}[data.wait || 'load']
 				}); else await page.setContent(data.body);
-			} catch (ex) {
+			} catch {
 				return void res.json(504);
 			}
 			
-			await page.emulateMedia(data.media || 'print');
+			await page.emulateMediaType(data.media || 'print');
 			const pdf = await page.pdf({
 				headerTemplate: data.header ? '<style>#header { display: flex; padding: 0; font-size: 12px; justify-content: center; align-items: center; }</style>' + data.header : '<span></span>',
 				footerTemplate: data.footer ? '<style>#footer { display: flex; padding: 0; font-size: 12px; justify-content: center; align-items: center; }</style>' + data.footer : '<span></span>',
