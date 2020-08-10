@@ -1,5 +1,5 @@
 const Ajv = require('ajv');
-const ajv = new Ajv();
+const ajv = new Ajv({ allErrors: true });
 
 ajv.addFormat('size', {
 	type: 'string',
